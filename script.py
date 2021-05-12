@@ -1,4 +1,5 @@
 import boto3, os
+import paramiko
 
 def create_key_pair():
     ec2 = boto3.resource('ec2')
@@ -50,6 +51,35 @@ def get_running_instances():
         instances_array.append(instance)
     return instances_array
 
+
+def ssh_and_send_command(instance_id):
+    session = boto3.Session(region_name="us-east-2")
+    ec2 = session.resource('ec2', region_name='us-east-2')
+    instances = ec2.instances.filter(InstanceIds = [instance_id])
+    for instance in instances:
+        print(instance.private_ip_address)
+    instance_ip = instance.private_ip_address
+    key = paramiko.RSAKey.from_private_key_file("/tmp/ec2-keypair.pem")
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    cmd ='echo "hello world"'
+    try:
+        # Here 'ubuntu' is user name and 'instance_ip' is public IP of EC2
+        client.connect(hostname=instance_ip, username="ec2-user", pkey=key)
+
+        # Execute a command(cmd) after connecting/ssh to an instance
+        stdin, stdout, stderr = client.exec_command(cmd)
+        print stdout.read()
+
+        # close the client connection once the job is done
+        client.close()
+        return stdout.read()
+
+    except Exception, e:
+        print e
+        return e
+
+    
 def stop_instance(instance_id):
     session = boto3.Session(region_name="us-east-2")
     ec2 = session.resource('ec2', region_name='us-east-2')
