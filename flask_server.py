@@ -16,6 +16,14 @@ def get_status():
     return render_template('status.html', instances=instances)
 
 
+@app.route("/get-status/<instance_id>")
+def get_status(instance_id):
+    if instance_id != 'i-00232f159d124b644':
+        resp = aws.ssh_and_send_command(instance_id)
+        print(resp)
+        return "We did SSH successfully and run 'echo hello world'. Here is the response we get from bash: {}"format(resp)
+    return "This instance carry application server, So it does not support SSH"
+   
 @app.route("/create-instance")
 def launch_instance():
     return render_template('launch.html')
