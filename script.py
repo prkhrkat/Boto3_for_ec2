@@ -70,8 +70,9 @@ def ssh_and_send_command(instance_id):
 
         # Execute a command(cmd) after connecting/ssh to an instance
         stdin, stdout, stderr = client.exec_command(cmd)
+        a = stdout.read()
         client.close()
-        return (stdout.read())
+        return (a)
 
     except:
         return 'getting some error'
