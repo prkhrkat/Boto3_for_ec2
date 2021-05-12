@@ -12,7 +12,7 @@
     </tr>
     {% for instance in instances: %}
     <tr>
-      <td> <a href='/{{ instance.id }}'>{{ instance.id }}</a></td>
+      <td> <a href='/get-status/{{ instance.id }}'>{{ instance.id }}</a></td>
       <td>{{ instance.state }}</td>
       <td>{{ instance.instance_type }}</td>
       <td>{{ instance.public_ip_address }}</td>
