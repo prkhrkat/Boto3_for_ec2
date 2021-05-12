@@ -1,39 +1,44 @@
 import boto3, os
 
 def create_key_pair():
-    ec2_client = boto3.client('ec2', region_name='us-west-2')
-    key_pair = ec2_client.create_key_pair(KeyName="aws_key")
-    private_key = key_pair["KeyMaterial"]
+    ec2 = boto3.resource('ec2')
+
+    # call the boto ec2 function to create a key pair
+    key_pair = ec2.create_key_pair(KeyName='ec2-keypair')
+
+    # capture the key and store it in a file
+    KeyPairOut = str(key_pair.key_material)
+    print(KeyPairOut)
 
     # write private key to file with 400 permissions
-    with os.fdopen(os.open("/tmp/aws_key.pem", os.O_WRONLY | os.O_CREAT, 0o400), "w+") as handle:
-        handle.write(private_key)
-    return private_key
-
-
-def create_instance():
-    session = boto3.Session(region_name="us-east-2")
-    ec2 = session.resource('ec2', region_name='us-east-2')
-    instances = ec2.create_instances(
-        ImageId="ami-077e31c4939f6a2f3",
-        MinCount=1,
-        MaxCount=1,
-        InstanceType="t2.micro",
-        KeyName="aws_key"
-        )
-
-    print (instance[0].id)
-    return(instance[0].id)
+    with os.fdopen(os.open("/tmp/ec2-keypair.pem", os.O_WRONLY | os.O_CREAT, 0o400), "w+") as handle:
+        handle.write(KeyPairOut)
 
 
 def get_public_ip(instance_id):
     session = boto3.Session(region_name="us-east-2")
     ec2 = session.resource('ec2', region_name='us-east-2')
-    reservations = ec2.describe_instances(InstanceIds=[instance_id]).get("Reservations")
+    instances = ec2.instances.filter(InstanceIds = [instance_id])
+    for instance in instances:
+        print(instance.public_ip_address)
+    return instance.public_ip_address
+    
 
-    for reservation in reservations:
-        for instance in reservation['Instances']:
-            print(instance.get("PublicIpAddress"))
+
+def create_instance(instance_type):
+    session = boto3.Session(region_name="us-east-2")
+    ec2 = session.resource('ec2', region_name='us-east-2')
+    instance = ec2.create_instances(
+        ImageId="ami-077e31c4939f6a2f3",
+        MinCount=1,
+        MaxCount=1,
+        InstanceType=instance_type,
+        KeyName="ec2-keypair"
+        )
+
+    print (instance[0].id)
+    return(instance[0].id)
+
 
 def get_running_instances():
     session = boto3.Session(region_name="us-east-2")

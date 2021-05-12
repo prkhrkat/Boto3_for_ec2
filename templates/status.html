@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hey, Here is the list of your instances.</h1>
+<table style="width:100%">
+    <tr>
+      <th>Instance ID</th>
+      <th>Instance State</th>
+      <th>Instance Type</th>
+      <th>Instance Public IP</th>
+    </tr>
+    {% for instance in instances: %}
+    <tr>
+      <td>{{ instance.id }}</td>
+      <td>{{ instance.state }}</td>
+      <td>{{ instance.instance_type }}</td>
+      <td>{{ instance.public_ip_address }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+<h4><a href='../'>Go back to home page</a> </h4>
+</body>
+</html>
