@@ -69,7 +69,6 @@ def ssh_and_send_command(instance_id):
 
         # Execute a command(cmd) after connecting/ssh to an instance
         stdin, stdout, stderr = client.exec_command(cmd)
-        print stdout.read()
 
         # close the client connection once the job is done
         client.close()
