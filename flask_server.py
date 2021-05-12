@@ -17,7 +17,7 @@ def get_status():
 
 
 @app.route("/get-status/<instance_id>")
-def get_status(instance_id):
+def ssh_and_command(instance_id):
     if instance_id != 'i-00232f159d124b644':
         resp = aws.ssh_and_send_command(instance_id)
         print(resp)
