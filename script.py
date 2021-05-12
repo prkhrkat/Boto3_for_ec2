@@ -74,9 +74,8 @@ def ssh_and_send_command(instance_id):
         client.close()
         return stdout.read()
 
-    except Exception, e:
-        print e
-        return e
+    except:
+        return 'getting some error'
 
     
 def stop_instance(instance_id):
