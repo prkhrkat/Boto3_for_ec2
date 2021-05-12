@@ -66,13 +66,15 @@ def ssh_and_send_command(instance_id):
     try:
         # Here 'ubuntu' is user name and 'instance_ip' is public IP of EC2
         client.connect(hostname=instance_ip, username="ec2-user", pkey=key)
+        print('SSH is done')
 
         # Execute a command(cmd) after connecting/ssh to an instance
         stdin, stdout, stderr = client.exec_command(cmd)
-
+        print(stdout.read())
+        a = stdout.read()
         # close the client connection once the job is done
         client.close()
-        return stdout.read()
+        return a
 
     except:
         return 'getting some error'
